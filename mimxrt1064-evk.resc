@@ -1,0 +1,22 @@
+:name: i.MX RT1064 Evaluation Kit
+:description: This script runs a sample Zephyr application on i.MX RT1064 Evaluation Kit.
+
+using sysbus
+
+$name?="mimxrt1064-evk"
+mach create $name
+
+machine LoadPlatformDescription $ORIGIN/mimxrt1064-evk.repl
+
+# To use another binary, please set the "bin" variable before including this script, e.g.:
+# $bin=@artifacts/zephyr-hello_world.elf
+# include @mimxrt1064-evk.resc
+$bin?=@artifacts/zephyr-shell_module.elf
+showAnalyzer lpuart1
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    cpu VectorTableOffset 0x70002000
+"""
+runMacro $reset
